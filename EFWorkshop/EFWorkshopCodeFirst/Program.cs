@@ -16,6 +16,7 @@ namespace EfWorkshop
             using (var context = new UniversityDbContext(optionsBuilder.Options))
             {
                 context.Database.EnsureCreated();
+
                 #region CreateOperations
 
                 var seedStudents = GetDbSeedStudents();
@@ -26,7 +27,7 @@ namespace EfWorkshop
 
                 #region ReadOperations
                 var logisticsStudents = context.Students.Where(st => st.FacultyId == 2);
-                var highGradeStudent = logisticsStudents.Where(st => st.AverageGrade > 7);
+                var highGradeStudent = logisticsStudents.Where(st => st.AverageGrade > 5);
                 var orderedStudent = highGradeStudent.OrderByDescending(st => st.AverageGrade);
 
                 var resultStudents = orderedStudent.ToList();
@@ -46,6 +47,20 @@ namespace EfWorkshop
                 var targetStudent = context.Students
                     .FromSql($"SELECT * FROM dbo.Students WHERE FirstName = 'Nick'")
                     .FirstOrDefault();
+                #endregion
+
+                #region UpdateOperations
+                var studentUpdate = context.Students.FirstOrDefault(x => x.StudentId == 1);
+                studentUpdate.FirstName = "TestName";
+
+                TrySaveChanges(context);
+                #endregion
+
+                #region RemoveOperations
+                var studentRemove = context.Students.FirstOrDefault(x => x.StudentId == 2);
+                context.Students.Remove(studentRemove);
+
+                TrySaveChanges(context);
                 #endregion
             }
         }
