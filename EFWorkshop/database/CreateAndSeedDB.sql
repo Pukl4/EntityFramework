@@ -13,7 +13,7 @@ CREATE TABLE Students (
 	LastName NVARCHAR(20) NOT NULL,
 	Email NVARCHAR(20),
 	PhoneNumber NVARCHAR(25),
-	AverageGrade DOUBLE(2,1),
+	AverageGrade DECIMAL(2,1),
 	FacultyId INT 
 );
 GO
@@ -41,62 +41,4 @@ VALUES
 	('Law', 'Faculty of Law');
 GO
 
-CREATE PROCEDURE sp_AddStudent 
-(
-	@FirstName NVARCHAR(20),
-	@LastName NVARCHAR(20),
-	@Email NVARCHAR(20),
-	@PhoneNumber NVARCHAR(25),
-	@AverageGrade FLOAT,
-	@FacultyId INT,
-	@Id INT OUTPUT 
-)    
-AS
-BEGIN    
-    INSERT INTO Students(FirstName, LastName, Email, PhoneNumber, AverageGrade, FacultyId)    
-    VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @AverageGrade, @FacultyId);
-	
-	SET @Id = SCOPE_IDENTITY() 
-    RETURN @Id 
-END;
-GO
 
-CREATE PROCEDURE sp_SelectAllStudents
-AS
-BEGIN    
-    SELECT * FROM Students
-END;
-GO
-
-CREATE PROCEDURE sp_DeleteStudent
-(
-	@Id INT
-)
-AS
-BEGIN
-	DELETE FROM Students
-	WHERE Id = @Id
-END;
-GO
-
-CREATE FUNCTION fk_GetFacultyName
-(
-	@StudentId INT
-)
-RETURNS NVARCHAR(20)
-AS
-BEGIN
-	DECLARE @FacultyName NVARCHAR(20);
-	DECLARE @FacultyId INT;
-
-	SELECT @FacultyId = st.FacultyId
-	FROM Students st
-	WHERE Id = @StudentId;
-
-	SELECT @FacultyName = fc.Name
-	FROM Faculties fc
-	WHERE Id = @FacultyId;
-	
-	RETURN @FacultyName;
-END;
-GO
