@@ -3,6 +3,7 @@ using EfWorkshop.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace EfWorkshop
 {
@@ -21,6 +22,30 @@ namespace EfWorkshop
                 context.Students.AddRange(seedStudents);
 
                 TrySaveChanges(context);
+                #endregion
+
+                #region ReadOperations
+                var logisticsStudents = context.Students.Where(st => st.FacultyId == 2);
+                var highGradeStudent = logisticsStudents.Where(st => st.AverageGrade > 7);
+                var orderedStudent = highGradeStudent.OrderByDescending(st => st.AverageGrade);
+
+                var resultStudents = orderedStudent.ToList();
+
+                var student = context.Students.FirstOrDefault(context => context.FacultyId == 2);
+
+                context.Entry(student)
+                    .Reference(st => st.Faculty)
+                    .Load();
+
+                var faculty = context.Faculties.FirstOrDefault(x => x.FacultyId == 1);
+
+                context.Entry(faculty)
+                    .Collection(fc => fc.Students)
+                    .Load();
+
+                var targetStudent = context.Students
+                    .FromSql($"SELECT * FROM dbo.Students WHERE FirstName = 'Nick'")
+                    .FirstOrDefault();
                 #endregion
             }
         }
