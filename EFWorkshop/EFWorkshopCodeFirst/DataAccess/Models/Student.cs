@@ -9,7 +9,6 @@
         public string PhoneNumber { get; set; }
         public double AverageGrade { get; set; }
         public int FacultyId { get; set; }
-
         public Faculty Faculty { get; set; }
 
     }

@@ -7,7 +7,6 @@ namespace EfWorkshop.DataAccess.Models
         public int FacultyId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
         public List<Student> Students { get; set; }
     }
 }
